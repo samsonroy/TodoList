@@ -1,7 +1,3 @@
-/**
- * @format
- */
-
 import './global.css';
 import { AppRegistry } from 'react-native';
 import { Provider } from 'react-redux';
