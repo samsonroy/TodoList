@@ -6,22 +6,37 @@ import {
   updateTodo,
   Todo,
 } from '../../../reduxstore/slices/TodoSlice';
+import { TextConstants } from '../../../constants/text';
+import useLocalAuthentication from '../../../hooks/useLocalAuthentication';
 import TodoItemRow from '../../molecules/TodoItemRow';
 import ListEmptyView from '../../atoms/ListEmptyView';
 
 const TodoListSection = () => {
   const dispatch = useAppDispatch();
   const todos = useAppSelector(state => state.todos);
+  const { authenticateAndRun } = useLocalAuthentication();
 
   const renderItem: ListRenderItem<Todo> = useCallback(
-    ({ item }) => (
-      <TodoItemRow
-        todo={item}
-        onUpdate={text => dispatch(updateTodo({ id: item.id, text }))}
-        onRemove={id => dispatch(removeTodo(id))}
-      />
-    ),
-    [dispatch],
+    ({ item }) => {
+      const handleUpdate = (text: string) =>
+        authenticateAndRun(() => dispatch(updateTodo({ id: item.id, text })), {
+          promptMessage: TextConstants.AUTHENTICATION_PROMPT_UPDATE,
+        });
+
+      const handleRemove = (id: string) =>
+        authenticateAndRun(() => dispatch(removeTodo(id)), {
+          promptMessage: TextConstants.AUTHENTICATION_PROMPT_DELETE,
+        });
+
+      return (
+        <TodoItemRow
+          todo={item}
+          onUpdate={handleUpdate}
+          onRemove={handleRemove}
+        />
+      );
+    },
+    [authenticateAndRun, dispatch],
   );
 
   return (

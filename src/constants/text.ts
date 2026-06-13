@@ -10,4 +10,10 @@ export enum TextConstants {
   UPDATE_TODO_BUTTON = 'Update',
   SAVE_TODO_BUTTON = 'Save',
   DELETE_TODO_BUTTON = 'Delete',
+  AUTHENTICATION_PROMPT_ADD = 'Please authenticate to add a todo',
+  AUTHENTICATION_PROMPT_UPDATE = 'Please authenticate to update a todo',
+  AUTHENTICATION_PROMPT_DELETE = 'Please authenticate to delete a todo',
+  DEFAULT_FALLBACK_LABEL = 'Use device passcode',
+  BIOMETRIC_UNAVAILABLE_TITLE = 'Biometric unavailable',
+  BIOMETRIC_UNAVAILABLE_MESSAGE = 'Enable Face ID or Touch ID on a real device to continue.',
 }

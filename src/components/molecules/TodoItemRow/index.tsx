@@ -9,8 +9,8 @@ import { TextConstants } from '../../../constants/text';
 
 type TodoItemRowProps = {
   todo: Todo;
-  onUpdate: (text: string) => void;
-  onRemove: (id: string) => void;
+  onUpdate: (text: string) => Promise<boolean>;
+  onRemove: (id: string) => Promise<boolean>;
 };
 
 // A component representing a single "TODO" item, with options to edit or delete it
@@ -22,23 +22,26 @@ const TodoItemRow = ({ todo, onUpdate, onRemove }: TodoItemRowProps) => {
     setDraftText(todo.description);
   }, [todo.description]);
 
-  const handleSave = () => {
+  const handleSave = async () => {
     const trimmedText = draftText.trim();
 
     if (!trimmedText) {
       return;
     }
 
-    onUpdate(trimmedText);
-    setIsEditing(false);
+    const wasUpdated = await onUpdate(trimmedText);
+
+    if (wasUpdated) {
+      setIsEditing(false);
+    }
   };
 
   const handleStartEditing = () => {
     setIsEditing(true);
   };
 
-  const handleRemove = () => {
-    onRemove(todo.id);
+  const handleRemove = async () => {
+    await onRemove(todo.id);
   };
 
   return (

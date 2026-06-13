@@ -6,14 +6,14 @@ import TextInputBox from '../../atoms/TextInputBox';
 import { TextConstants } from '../../../constants/text';
 
 type AddTodoRowProps = {
-  onAdd: (text: string) => void;
+  onAdd: (text: string) => Promise<boolean>;
 };
 
 // A component for adding a new "TODO" item, consisting of a text input and an "Add" button
 const AddTodoRow = ({ onAdd }: AddTodoRowProps) => {
   const [textValue, setTextValue] = useState('');
 
-  const handleAdd = () => {
+  const handleAdd = async () => {
     // Trim the input to prevent adding empty or whitespace-only todos
     const trimmedValue = textValue.trim();
 
@@ -23,8 +23,11 @@ const AddTodoRow = ({ onAdd }: AddTodoRowProps) => {
       return;
     }
 
-    onAdd(trimmedValue);
-    setTextValue('');
+    const wasAdded = await onAdd(trimmedValue);
+
+    if (wasAdded) {
+      setTextValue('');
+    }
   };
 
   return (
