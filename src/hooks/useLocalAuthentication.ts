@@ -8,6 +8,24 @@ type AuthenticationOptions = {
   fallbackLabel?: string;
 };
 
+type Authenticate = (options: AuthenticationOptions) => Promise<boolean>;
+
+export const runAuthenticatedAction = async (
+  authenticate: Authenticate,
+  action: () => void,
+  options: AuthenticationOptions,
+): Promise<boolean> => {
+  const isAuthenticated = await authenticate(options);
+
+  if (!isAuthenticated) {
+    return false;
+  }
+
+  action();
+
+  return true;
+};
+
 // This is custom hook that provides functions for handling local authentication using biometrics (like Face ID or Touch ID) in a React Native app.
 // It abstracts away the logic for checking hardware availability, enrollment, and performing authentication, making it easier to use these features across the app.
 const useLocalAuthentication = () => {
@@ -53,15 +71,7 @@ const useLocalAuthentication = () => {
       action: () => void,
       options: AuthenticationOptions,
     ): Promise<boolean> => {
-      const isAuthenticated = await authenticate(options);
-
-      if (!isAuthenticated) {
-        return false;
-      }
-
-      action();
-
-      return true;
+      return runAuthenticatedAction(authenticate, action, options);
     },
     [authenticate],
   );
